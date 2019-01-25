@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${news.title}"></title>
+    <link rel="import" href="import-headers.html">
+</head>
+<body>
+<div class="container" style="margin-top:30px">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 th:text="${news.title}"></h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <pre style="word-wrap: break-word; white-space: pre-wrap;" th:text="${news.body}"></pre>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <h4 th:text="'Author: ' + ${news.author}"></h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <p th:text="'Date: ' + ${news.dateFormat()}"></p>
+        </div>
+    </div>
+
+
+</div>
+
+</body>
+</html>
