@@ -61,6 +61,17 @@ public class User {
 		return name;
 	}
 
+	@Override
+	public String toString() {
+		return "User{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				", userid='" + userid + '\'' +
+				", password='" + password + '\'' +
+				", matchingPassword='" + matchingPassword + '\'' +
+				'}';
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}

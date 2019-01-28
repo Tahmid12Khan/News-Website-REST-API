@@ -29,17 +29,17 @@ public class HomeController {
 
 	@GetMapping("/")
 	public String greeting(@RequestParam("page") Optional<Integer> page, Model model, HttpSession session) {
-		List<News> news = newsService.findAllByOrderByIdDesc();
-		model.addAttribute("news", news);
-		int evalPage = (page.orElse(0) < 1) ? 0 : page.get() - 1;
-
-		Page<News> newsList = newsService.findAllByOrderByDateDesc(PageRequest.of(evalPage, 4));
-		PagerModel pager = new PagerModel(newsList.getTotalPages(), newsList.getNumber());
-		System.out.println(newsList.getNumber() + " st " + pager.getStartPage() + " en " + pager.getEndPage());
-		model.addAttribute("newsList", newsList);
-		model.addAttribute("selectedPageSize", 4);
-		model.addAttribute("pageSizes", 4);
-		model.addAttribute("pager", pager);
+//		List<News> news = newsService.findAllByOrderByIdDesc();
+//		model.addAttribute("news", news);
+//		int evalPage = (page.orElse(0) < 1) ? 0 : page.get() - 1;
+//
+//		Page<News> newsList = newsService.findAllByOrderByDateDesc(PageRequest.of(evalPage, 4));
+//		PagerModel pager = new PagerModel(newsList.getTotalPages(), newsList.getNumber());
+//		System.out.println(newsList.getNumber() + " st " + pager.getStartPage() + " en " + pager.getEndPage());
+//		model.addAttribute("newsList", newsList);
+//		model.addAttribute("selectedPageSize", 4);
+//		model.addAttribute("pageSizes", 4);
+//		model.addAttribute("pager", pager);
 
 		return "homepage";
 	}

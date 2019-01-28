@@ -12,10 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.context.WebApplicationContext;
 
 import javax.sql.DataSource;
 
@@ -23,78 +21,70 @@ import javax.sql.DataSource;
 //
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
-	@Autowired
-	private WebApplicationContext applicationContext;
-	@Autowired
-	private UserService userDetailsService;
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //	@Autowired
-//	private AuthenticationSuccessHandlerImpl successHandler;
-	@Autowired
-	private DataSource dataSource;
+//	private WebApplicationContext applicationContext;
 
-//	PasswordEncoder passwordEncoder;
-//	@Autowired
-//	public SecurityConfiguration(BCryptPasswordEncoder bCryptPasswordEncoder){
-//		passwordEncoder = bCryptPasswordEncoder;
-//	}
+	private UserService userDetailsService;
+
+	private DataSource dataSource;
+	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	public SecurityConfiguration(UserService userDetailsService, DataSource dataSource,
+								 PasswordEncoder passwordEncoder) {
+		this.userDetailsService = userDetailsService;
+		this.dataSource = dataSource;
+		this.passwordEncoder = passwordEncoder;
+
+	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+				.sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
 				.csrf().disable()
 				.authorizeRequests()
-
+				.antMatchers("/api/user/**").permitAll()
 				.antMatchers("/api/news").permitAll()
 				.antMatchers("/api/news/**").permitAll()
-				.antMatchers("/").permitAll()
-				.antMatchers("/login").permitAll()
-				.anyRequest().fullyAuthenticated()
+				.antMatchers("/api/register").permitAll()
+				.anyRequest().denyAll()
 				.and().httpBasic()
-				.and().formLogin()
-				.loginPage("/login").failureUrl("/login?error=true")
-				.defaultSuccessUrl("/")
-				.usernameParameter("userid")
-				.passwordParameter("password")
-				.and().logout()
-				.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				.logoutSuccessUrl("/?logout")
-				.deleteCookies("JSESSIONID")
-				.invalidateHttpSession(true).permitAll();
+		;
 	}
 
 	@Override
 	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService)
-				.passwordEncoder(encoder())
+				.passwordEncoder(passwordEncoder)
+
 				.and()
 				.authenticationProvider(authenticationProvider())
 				.jdbcAuthentication()
-				.dataSource(dataSource);
+				.dataSource(dataSource)
+		;
 	}
 
 	@Override
-	public void configure(WebSecurity web) throws Exception {
+	public void configure(WebSecurity web) {
 		web.ignoring()
-				.antMatchers("/resources/**");
+				.antMatchers("/resources/**", "/js/**", "/css/**", "/import-headers.html");
 	}
+
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
 		final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 		authProvider.setUserDetailsService(userDetailsService);
-		authProvider.setPasswordEncoder(encoder());
+		authProvider.setPasswordEncoder(passwordEncoder);
 		return authProvider;
 	}
 
-	@Bean
-	public PasswordEncoder encoder() {
-		return new BCryptPasswordEncoder();
-	}
-
 //	@Bean
-//	public SecurityEvaluationContextExtension securityEvaluationContextExtension() {
-//		return new SecurityEvaluationContextExtension();
+//	public PasswordEncoder encoder() {
+//		return new BCryptPasswordEncoder();
 //	}
-
 
 }

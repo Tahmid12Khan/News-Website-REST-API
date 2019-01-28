@@ -11,8 +11,10 @@ import java.util.Optional;
 public interface NewsRepository extends JpaRepository<News, Long> {
 
 	Optional<List<News>> findAllByOrderByIdDesc();
-	Optional<Page<News>> findAllByOrderByDateDesc(Pageable pageable);
 
+	Page<News> findAllByOrderByDateDesc(Pageable pageable);
+
+	Page<News> findAll(Pageable pageable);
 	Optional<News> findById(Long id);
 
 	Optional<List<News>> findAllByOrderByDateDesc();

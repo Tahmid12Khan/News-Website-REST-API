@@ -26,6 +26,8 @@ public class UserService implements UserDetailsService{
 	private final String usernameExists = "Username exits";
 	private final String sucessCreated = "created";
 	private final String sucess = "success";
+	private final String userNotFound = "User Not Found";
+	private final String passwordDidNotMatch = "Password did not match";
 	@Autowired
 	public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
 
@@ -33,10 +35,6 @@ public class UserService implements UserDetailsService{
 		this.passwordEncoder = bCryptPasswordEncoder;
 	}
 
-//	public boolean findByUseridAndAndPassword(String userid, String password) {
-////		return userRepository.findByUseridAndAndPassword(userid, password).isPresent();
-////
-////	}
 
 	private Optional<User> findByUserid(User user) {
 		return userRepository.findByUserid(user.getUserid());
@@ -47,18 +45,16 @@ public class UserService implements UserDetailsService{
 		return userRepository.findAll();
 	}
 
-	public boolean findByUseridAndPassword(User u, BindingResult bindingResult) {
+	public String findByUseridAndPassword(User u) {
 		Optional <User> user = findByUserid(u);
 		if(!user.isPresent()){
-			bindingResult.addError(new ObjectError(bindingResult.getObjectName(), "Invalid username"));
-			return false;
+			return userNotFound;
 		}
 		User foundUser = user.get();
 		if(!passwordEncoder.matches(u.getPassword(), foundUser.getPassword())){
-			bindingResult.addError(new ObjectError(bindingResult.getObjectName(), "Invalid username or password"));
-			return false;
+			return passwordDidNotMatch;
 		}
-		return true;
+		return sucess;
 	}
 
 	public String save(User user, BindingResult bindingResult) {
@@ -116,6 +112,9 @@ public class UserService implements UserDetailsService{
 
 	public HttpStatus getCode(String message) {
 		if (message.equals(sucessCreated)) return HttpStatus.CREATED;
+		else if (message.equals(userNotFound)) return HttpStatus.NOT_FOUND;
+		else if (message.equals(passwordDidNotMatch)) return HttpStatus.FAILED_DEPENDENCY;
+		else if (message.equals(sucess)) return HttpStatus.OK;
 //		else if (message.equals(newsDoesNotExist)) return HttpStatus.NOT_FOUND;
 //		else if (message.equals(unAuthorizedAccess)) return HttpStatus.FORBIDDEN;
 		return HttpStatus.METHOD_NOT_ALLOWED;

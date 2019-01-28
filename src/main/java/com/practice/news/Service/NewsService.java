@@ -7,7 +7,8 @@ import com.practice.news.Persistence.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -35,7 +36,12 @@ public class NewsService {
 	}
 
 	private boolean isNewsExists(News news) {
-		return newsRepository.existsById(news.getId());
+		try {
+			return newsRepository.existsById(news.getId());
+		} catch (Exception e) {
+			return false;
+		}
+
 	}
 
 	public List<News> findAllByOrderByIdDesc() {
@@ -46,10 +52,8 @@ public class NewsService {
 
 	}
 
-	public Page<News> findAllByOrderByDateDesc(Pageable pageable) {
-		Optional<Page<News>> news = newsRepository.findAllByOrderByDateDesc(pageable);
-		return news.get();
-
+	public Page<News> findAllByOrderByDateDesc(int page, int size) {
+		return newsRepository.findAll(PageRequest.of(page, size, Sort.by("date").descending()));
 	}
 
 	public List<News> findAllByOrderByDateDesc() {
@@ -89,6 +93,7 @@ public class NewsService {
 
 		String message = getResult(news, username, bindingResult);
 		if (!message.equals(success)) return message;
+		news.setAuthor(username);
 		newsRepository.saveAndFlush(news);
 		return sucessUpdated;
 
@@ -130,8 +135,8 @@ public class NewsService {
 
 	public HttpStatus getCode(String message) {
 		if (message.equals(sucessCreated)) return HttpStatus.CREATED;
-		if (message.equals(sucessUpdated)) return HttpStatus.ACCEPTED;
-		if (message.equals(sucessDeleted)) return HttpStatus.ACCEPTED;
+		else if (message.equals(sucessUpdated)) return HttpStatus.ACCEPTED;
+		else if (message.equals(sucessDeleted)) return HttpStatus.ACCEPTED;
 		else if (message.equals(newsDoesNotExist)) return HttpStatus.NOT_FOUND;
 		else if (message.equals(unAuthorizedAccess)) return HttpStatus.FORBIDDEN;
 		return HttpStatus.METHOD_NOT_ALLOWED;
