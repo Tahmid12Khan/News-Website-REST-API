@@ -5,7 +5,6 @@ import com.practice.news.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,13 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.sql.DataSource;
 
-
-//
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-//	@Autowired
-//	private WebApplicationContext applicationContext;
 
 	private UserService userDetailsService;
 
@@ -60,7 +55,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService)
 				.passwordEncoder(passwordEncoder)
-
 				.and()
 				.authenticationProvider(authenticationProvider())
 				.jdbcAuthentication()
@@ -81,10 +75,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		authProvider.setPasswordEncoder(passwordEncoder);
 		return authProvider;
 	}
-
-//	@Bean
-//	public PasswordEncoder encoder() {
-//		return new BCryptPasswordEncoder();
-//	}
 
 }

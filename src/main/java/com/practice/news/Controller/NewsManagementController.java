@@ -16,7 +16,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -24,6 +23,7 @@ import java.util.Optional;
 public class NewsManagementController {
 	private NewsService newsService;
 	private IAuthenticationFacade authenticationFacade;
+
 	@Autowired
 	public NewsManagementController(NewsService newsService, AuthenticationFacade authentication) {
 		this.newsService = newsService;
@@ -32,8 +32,6 @@ public class NewsManagementController {
 
 	@GetMapping(value = "/api/news")
 	public ResponseEntity<?> showNewsList(@RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "1000000000") int size) {
-
-		System.out.println("Page: " + page + ". Size: " + size);
 		Page<News> news = newsService.findAllByOrderByDateDesc(Math.max(page - 1, 0), size);
 		return new ResponseEntity<>(news, getStatusForNewsSize(news));
 	}
@@ -59,27 +57,21 @@ public class NewsManagementController {
 	@PreAuthorize("authentication.name != 'anonymousUser'")
 	@PostMapping(value = "/api/news")
 	public ResponseEntity<?> addNews(@Valid @RequestBody News news, BindingResult bindingResult, Authentication authentication) {
-		System.out.println(news.toString());
-		System.out.println("Credentials " + authenticationFacade.getAuthentication().getCredentials());
-		System.out.println("Details: " + authenticationFacade.getAuthentication().getDetails());
 		news.setAuthor(authenticationFacade.getAuthentication().getName());
 		String message = newsService.save(news, bindingResult);
-		System.out.println("Post " + authenticationFacade.getAuthentication().getName());
 		return new ResponseEntity<>(message, newsService.getCode(message));
 	}
 
 	@PreAuthorize("authentication.name != 'anonymousUser'")
 	@PutMapping(value = "/api/news")
 	public ResponseEntity<?> editNews(@Valid @RequestBody News news, BindingResult bindingResult) {
-		System.out.println("Put " + news.toString());
-		System.out.println("Author: " + authenticationFacade.getAuthentication().getName());
 		String message = newsService.update(news, authenticationFacade.getAuthentication().getName(), bindingResult);
 		return new ResponseEntity<>(message, newsService.getCode(message));
 	}
 
 	@PreAuthorize("authentication.name != 'anonymousUser'")
 	@DeleteMapping(value = "/api/news")
-	public ResponseEntity<?> deleteNews(@Valid @RequestBody News news, BindingResult bindingResult) {
+	public ResponseEntity<?> deleteNews(@RequestBody News news, BindingResult bindingResult) {
 		String message = newsService.delete(news, authenticationFacade.getAuthentication().getName(), bindingResult);
 		return new ResponseEntity<>(message, newsService.getCode(message));
 	}

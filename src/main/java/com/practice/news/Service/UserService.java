@@ -1,7 +1,5 @@
 package com.practice.news.Service;
 
-
-import com.practice.news.Error.Invalid;
 import com.practice.news.Model.User;
 import com.practice.news.Persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 
 import java.util.List;
 import java.util.Optional;
@@ -80,7 +77,6 @@ public class UserService implements UserDetailsService{
 
 
 	private String getResult(User user, BindingResult bindingResult) {
-		String errMessage;
 		if (bindingResult.hasErrors()) {
 			return getErrorMessages(bindingResult);
 		}
@@ -104,19 +100,23 @@ public class UserService implements UserDetailsService{
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Optional <User> u = userRepository.findByUserid(username);
 		if(!u.isPresent()){
-			throw new Invalid("User is not present");
+			throw new NullPointerException("User not found");
 		}
 		return new UserPrincipal(u.get());
 
 	}
 
 	public HttpStatus getCode(String message) {
-		if (message.equals(sucessCreated)) return HttpStatus.CREATED;
-		else if (message.equals(userNotFound)) return HttpStatus.NOT_FOUND;
-		else if (message.equals(passwordDidNotMatch)) return HttpStatus.FAILED_DEPENDENCY;
-		else if (message.equals(sucess)) return HttpStatus.OK;
-//		else if (message.equals(newsDoesNotExist)) return HttpStatus.NOT_FOUND;
-//		else if (message.equals(unAuthorizedAccess)) return HttpStatus.FORBIDDEN;
+		switch (message) {
+			case sucessCreated:
+				return HttpStatus.CREATED;
+			case userNotFound:
+				return HttpStatus.NOT_FOUND;
+			case passwordDidNotMatch:
+				return HttpStatus.FAILED_DEPENDENCY;
+			case sucess:
+				return HttpStatus.OK;
+		}
 		return HttpStatus.METHOD_NOT_ALLOWED;
 	}
 }

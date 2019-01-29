@@ -1,8 +1,6 @@
 package com.practice.news;
 
 import com.practice.news.Controller.NewsManagementController;
-import com.practice.news.Controller.HomeController;
-import com.practice.news.Controller.ShowNews;
 import com.practice.news.Persistence.NewsRepository;
 
 import static org.assertj.core.api.Assertions.*;
@@ -18,10 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class NewsApplicationTests {
 	@Autowired
 	private NewsManagementController newsManagementController;
-	@Autowired
-	private HomeController homeController;
-	@Autowired
-	private ShowNews showNews;
 
 	@Test
 	public void contextLoads() {
@@ -35,8 +29,7 @@ public class NewsApplicationTests {
 	public void testControllers() throws Exception {
 
 		assertThat(newsManagementController).isNotNull();
-		assertThat(homeController).isNotNull();
-		assertThat(showNews).isNotNull();
+
 
 	}
 

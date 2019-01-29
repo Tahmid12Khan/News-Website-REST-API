@@ -1,6 +1,5 @@
 package com.practice.news.Service;
 
-import com.practice.news.Error.Invalid;
 import com.practice.news.Model.News;
 import com.practice.news.Persistence.NewsRepository;
 
@@ -14,9 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,29 +40,12 @@ public class NewsService {
 
 	}
 
-	public List<News> findAllByOrderByIdDesc() {
-		Optional<List<News>> news = newsRepository.findAllByOrderByIdDesc();
-		return news.isPresent() ? news.get() : Arrays.asList(
-				new News("No news available", "-",
-						"-", new Date()));
-
-	}
-
 	public Page<News> findAllByOrderByDateDesc(int page, int size) {
 		return newsRepository.findAll(PageRequest.of(page, size, Sort.by("date").descending()));
 	}
 
-	public List<News> findAllByOrderByDateDesc() {
-		Optional<List<News>> news = newsRepository.findAllByOrderByDateDesc();
-		return news.get();
-
-	}
-
-
 	private News findById(Long id) {
 		Optional<News> news = newsRepository.findById(id);
-		news.orElseThrow(() -> new Invalid("Id not found"));
-		System.out.println("News got " + news.get().getId());
 		return news.get();
 	}
 

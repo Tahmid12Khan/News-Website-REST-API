@@ -32,7 +32,7 @@ public class News {
 	@Size(min = 1, max = 50, message = "Name can't be empty or have more than 50 characters")
 	private String author;
 	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "yyyy-mm-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message = "Date can't be empty")
 	private Date date;
 
