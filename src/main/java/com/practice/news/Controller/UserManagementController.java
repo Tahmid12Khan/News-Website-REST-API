@@ -1,5 +1,6 @@
 package com.practice.news.Controller;
 
+import com.practice.news.Model.Utility;
 import com.practice.news.Model.User;
 import com.practice.news.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +31,17 @@ public class UserManagementController {
 
 	@PostMapping(value = "/api/user")
 	public ResponseEntity<?> findUser(@RequestBody User user) {
+		System.out.println("Login: " + user.toString());
 		String message = userService.findByUseridAndPassword(user);
-		return new ResponseEntity<>(message, userService.getCode(message));
+		return new ResponseEntity<>(message, Utility.getCode(message));
 	}
 
 	@PostMapping(value = "/api/register")
 	public ResponseEntity<?> addUser(@Valid @RequestBody User user,
 									 BindingResult bindingResult) {
-		System.out.println(user.toString());
+		System.out.println("Register: " + user.toString());
 		String message = userService.save(user, bindingResult);
-		return new ResponseEntity<>(message, userService.getCode(message));
+		return new ResponseEntity<>(message, Utility.getCode(message));
 	}
 
 }

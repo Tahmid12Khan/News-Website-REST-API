@@ -53,8 +53,7 @@ public class NewsManagementControllerTest {
 
 	private Page<News> getNews(int pageNo, int size) {
 		List<News> news = Arrays.asList(new News(), new News(), new News(), new News());
-		Page<News> page = new PageImpl<>(news, PageRequest.of(pageNo, size), news.size());
-		return page;
+		return new PageImpl<>(news, PageRequest.of(pageNo, size), news.size());
 	}
 
 	@Test

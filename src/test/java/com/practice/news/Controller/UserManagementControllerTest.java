@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.practice.news.Model.User;
+import com.practice.news.Model.Utility;
 import com.practice.news.Service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,8 +42,7 @@ public class UserManagementControllerTest {
 		u.setUserid("Tk");
 		u.setPassword("12");
 		u.setId((long) 10);
-		when(userService.findByUseridAndPassword(any())).thenReturn("success");
-		when(userService.getCode("success")).thenReturn(HttpStatus.OK);
+		when(userService.findByUseridAndPassword(any())).thenReturn(Utility.success);
 		this.mockMvc.perform(post("/api/user").contentType(MediaType.APPLICATION_JSON).content(convertToJSON(u))).
 				andDo(print()).andExpect(status().isOk());
 	}
@@ -53,8 +53,7 @@ public class UserManagementControllerTest {
 		u.setUserid("Tk");
 		u.setPassword("12");
 		u.setId((long) 10);
-		when(userService.findByUseridAndPassword(any())).thenReturn("Password did not match");
-		when(userService.getCode("Password did not match")).thenReturn(HttpStatus.EXPECTATION_FAILED);
+		when(userService.findByUseridAndPassword(any())).thenReturn(Utility.passwordDidNotMatch);
 		this.mockMvc.perform(post("/api/user").contentType(MediaType.APPLICATION_JSON).content(convertToJSON(u))).
 				andDo(print()).andExpect(status().isExpectationFailed());
 	}
@@ -65,8 +64,7 @@ public class UserManagementControllerTest {
 		u.setUserid("Tk");
 		u.setPassword("12");
 		u.setId((long) 10);
-		when(userService.save(any(), any())).thenReturn("Password did not match");
-		when(userService.getCode("Password did not match")).thenReturn(HttpStatus.EXPECTATION_FAILED);
+		when(userService.save(any(), any())).thenReturn(Utility.passwordDidNotMatch);
 		this.mockMvc.perform(post("/api/register").contentType(MediaType.APPLICATION_JSON).content(convertToJSON(u))).
 				andDo(print()).andExpect(status().isExpectationFailed());
 	}
@@ -77,8 +75,7 @@ public class UserManagementControllerTest {
 		u.setUserid("Tk");
 		u.setPassword("12");
 		u.setId((long) 10);
-		when(userService.save(any(), any())).thenReturn("success created");
-		when(userService.getCode("success created")).thenReturn(HttpStatus.CREATED);
+		when(userService.save(any(), any())).thenReturn(Utility.successCreated);
 		this.mockMvc.perform(post("/api/register").contentType(MediaType.APPLICATION_JSON).content(convertToJSON(u))).
 				andDo(print()).andExpect(status().isCreated());
 	}

@@ -1,5 +1,6 @@
 package com.practice.news.Controller;
 
+import com.practice.news.Model.Utility;
 import com.practice.news.Model.News;
 
 import com.practice.news.Security.AuthenticationFacade;
@@ -33,7 +34,6 @@ public class NewsManagementController {
 	@GetMapping(value = "/api/news")
 	public ResponseEntity<?> showNewsList(@RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "1000000000") int size) {
 		Page<News> news = newsService.findAllByOrderByDateDesc(Math.max(page - 1, 0), size);
-		System.out.println("fghfgh " + news.getTotalElements());
 		return new ResponseEntity<>(news, getStatusForNewsSize(news));
 	}
 
@@ -60,21 +60,21 @@ public class NewsManagementController {
 	public ResponseEntity<?> addNews(@Valid @RequestBody News news, BindingResult bindingResult, Authentication authentication) {
 		news.setAuthor(authenticationFacade.getAuthentication().getName());
 		String message = newsService.save(news, bindingResult);
-		return new ResponseEntity<>(message, newsService.getCode(message));
+		return new ResponseEntity<>(message, Utility.getCode(message));
 	}
 
 	@PreAuthorize("authentication.name != 'anonymousUser'")
 	@PutMapping(value = "/api/news")
 	public ResponseEntity<?> editNews(@Valid @RequestBody News news, BindingResult bindingResult) {
 		String message = newsService.update(news, authenticationFacade.getAuthentication().getName(), bindingResult);
-		return new ResponseEntity<>(message, newsService.getCode(message));
+		return new ResponseEntity<>(message, Utility.getCode(message));
 	}
 
 	@PreAuthorize("authentication.name != 'anonymousUser'")
 	@DeleteMapping(value = "/api/news")
 	public ResponseEntity<?> deleteNews(@RequestBody News news, BindingResult bindingResult) {
 		String message = newsService.delete(news, authenticationFacade.getAuthentication().getName(), bindingResult);
-		return new ResponseEntity<>(message, newsService.getCode(message));
+		return new ResponseEntity<>(message, Utility.getCode(message));
 	}
 
 }

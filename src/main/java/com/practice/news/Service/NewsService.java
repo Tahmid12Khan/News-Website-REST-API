@@ -1,17 +1,15 @@
 package com.practice.news.Service;
 
+import com.practice.news.Model.Utility;
 import com.practice.news.Model.News;
 import com.practice.news.Persistence.NewsRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+
 
 import java.util.Optional;
 
@@ -19,12 +17,6 @@ import java.util.Optional;
 public class NewsService {
 
 	private NewsRepository newsRepository;
-	private final String success = "sucess";
-	private final String sucessCreated = "created";
-	private final String sucessUpdated = "updated";
-	private final String sucessDeleted = "deleted";
-	private final String newsDoesNotExist = "News does not exist";
-	private final String unAuthorizedAccess = "You don't have access";
 
 	@Autowired
 	public NewsService(NewsRepository newsRepository) {
@@ -60,10 +52,10 @@ public class NewsService {
 	public String save(News news, BindingResult bindingResult) {
 		news.setId((long) 0);
 		if (bindingResult.hasErrors()) {
-			return getErrorMessages(bindingResult);
+			return Utility.getErrorMessages(bindingResult);
 		}
 		newsRepository.saveAndFlush(news);
-		return sucessCreated;
+		return Utility.successCreated;
 
 
 	}
@@ -71,53 +63,36 @@ public class NewsService {
 	public String update(News news, String username, BindingResult bindingResult) {
 
 		String message = getResult(news, username, bindingResult);
-		if (!message.equals(success)) return message;
+		if (!message.equals(Utility.success)) return message;
 		news.setAuthor(username);
 		newsRepository.saveAndFlush(news);
-		return sucessUpdated;
+		return Utility.successUpdated;
 
 	}
 
 	private String getResult(News news, String username, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			return getErrorMessages(bindingResult);
+			return Utility.getErrorMessages(bindingResult);
 
 		}
 		if (!isNewsExists(news)) {
-			return newsDoesNotExist;
+			return Utility.newsDoesNotExist;
 
 		}
 		String author = findById(news.getId()).getAuthor();
 		if (!username.equals(author)) {
-			return unAuthorizedAccess;
+			return Utility.unAuthorizedAccess;
 		}
 
-		return success;
+		return Utility.success;
 	}
 
 	public String delete(News news, String username, BindingResult bindingResult) {
 		String message = getResult(news, username, bindingResult);
-		if (!message.equals(success)) return message;
+		if (!message.equals(Utility.success)) return message;
 		newsRepository.delete(news);
-		return sucessDeleted;
+		return Utility.successDeleted;
 	}
 
-	private String getErrorMessages(BindingResult bindingResult) {
-		StringBuilder errMsg = new StringBuilder();
-		if (bindingResult.hasErrors()) {
-			for (FieldError fieldError : bindingResult.getFieldErrors()) {
-				errMsg.append(fieldError.getDefaultMessage() + "\n");
-			}
-		}
-		return errMsg.toString();
-	}
 
-	public HttpStatus getCode(String message) {
-		if (message.equals(sucessCreated)) return HttpStatus.CREATED;
-		else if (message.equals(sucessUpdated)) return HttpStatus.ACCEPTED;
-		else if (message.equals(sucessDeleted)) return HttpStatus.ACCEPTED;
-		else if (message.equals(newsDoesNotExist)) return HttpStatus.NOT_FOUND;
-		else if (message.equals(unAuthorizedAccess)) return HttpStatus.FORBIDDEN;
-		return HttpStatus.BAD_REQUEST;
-	}
 }
