@@ -1,7 +1,6 @@
 package com.practice.news.Model;
 
 import com.practice.news.Validation.FieldMatch;
-import com.practice.news.Validation.UniqueUserId;
 
 import javax.persistence.*;
 

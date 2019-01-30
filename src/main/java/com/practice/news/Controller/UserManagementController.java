@@ -30,7 +30,6 @@ public class UserManagementController {
 
 	@PostMapping(value = "/api/user")
 	public ResponseEntity<?> findUser(@RequestBody User user) {
-		System.out.println(user.toString());
 		String message = userService.findByUseridAndPassword(user);
 		return new ResponseEntity<>(message, userService.getCode(message));
 	}
@@ -38,7 +37,7 @@ public class UserManagementController {
 	@PostMapping(value = "/api/register")
 	public ResponseEntity<?> addUser(@Valid @RequestBody User user,
 									 BindingResult bindingResult) {
-		System.out.println("SS " + user.toString());
+		System.out.println(user.toString());
 		String message = userService.save(user, bindingResult);
 		return new ResponseEntity<>(message, userService.getCode(message));
 	}

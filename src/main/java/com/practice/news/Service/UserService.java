@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +65,6 @@ public class UserService implements UserDetailsService{
 
 	private void save(User user) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		System.out.println(user.getPassword());
 		user.setMatchingPassword(user.getPassword());
 		userRepository.saveAndFlush(user);
 	}
@@ -92,6 +92,9 @@ public class UserService implements UserDetailsService{
 			for (FieldError fieldError : bindingResult.getFieldErrors()) {
 				errMsg.append(fieldError.getDefaultMessage() + "\n");
 			}
+			for (ObjectError objectError : bindingResult.getGlobalErrors()) {
+				errMsg.append(objectError.getDefaultMessage() + "\n");
+			}
 		}
 		return errMsg.toString();
 	}
@@ -113,11 +116,11 @@ public class UserService implements UserDetailsService{
 			case userNotFound:
 				return HttpStatus.NOT_FOUND;
 			case passwordDidNotMatch:
-				return HttpStatus.FAILED_DEPENDENCY;
+				return HttpStatus.EXPECTATION_FAILED;
 			case sucess:
 				return HttpStatus.OK;
 		}
-		return HttpStatus.METHOD_NOT_ALLOWED;
+		return HttpStatus.BAD_REQUEST;
 	}
 }
 

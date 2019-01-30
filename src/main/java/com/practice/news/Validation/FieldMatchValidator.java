@@ -25,8 +25,7 @@ public class FieldMatchValidator implements ConstraintValidator<FieldMatch, Obje
 			final Object secondObj = BeanUtils.getProperty(value, secondFieldName);
 			if (firstObj != null) {
 				valid = firstObj.equals(secondObj);
-			}
-			System.out.println(valid);
+			} else valid = false;
 		} catch (final Exception ignore) {
 		}
 

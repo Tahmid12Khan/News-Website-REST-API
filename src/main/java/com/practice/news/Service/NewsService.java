@@ -118,6 +118,6 @@ public class NewsService {
 		else if (message.equals(sucessDeleted)) return HttpStatus.ACCEPTED;
 		else if (message.equals(newsDoesNotExist)) return HttpStatus.NOT_FOUND;
 		else if (message.equals(unAuthorizedAccess)) return HttpStatus.FORBIDDEN;
-		return HttpStatus.METHOD_NOT_ALLOWED;
+		return HttpStatus.BAD_REQUEST;
 	}
 }

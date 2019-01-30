@@ -33,6 +33,7 @@ public class NewsManagementController {
 	@GetMapping(value = "/api/news")
 	public ResponseEntity<?> showNewsList(@RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "1000000000") int size) {
 		Page<News> news = newsService.findAllByOrderByDateDesc(Math.max(page - 1, 0), size);
+		System.out.println("fghfgh " + news.getTotalElements());
 		return new ResponseEntity<>(news, getStatusForNewsSize(news));
 	}
 
