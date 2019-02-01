@@ -9,15 +9,15 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class Utility {
-	public final static String success = "success";
-	public final static String successCreated = "created";
-	public final static String successUpdated = "updated";
-	public final static String successDeleted = "deleted";
-	public final static String newsDoesNotExist = "News does not exist";
-	public final static String unAuthorizedAccess = "You don't have access";
-	public final static String usernameExists = "Username exits";
-	public final static String userNotFound = "User Not Found";
-	public final static String passwordDidNotMatch = "Password did not match";
+	public final static String SUCCESS = "success";
+	public final static String SUCCESS_CREATED = "created";
+	public final static String SUCCESS_UPDATED = "updated";
+	public final static String SUCCESS_DELETED = "deleted";
+	public final static String NEWS_DOES_NOT_EXIST = "News does not exist";
+	public final static String UNAUTHORIZED_ACCESS = "You don't have access";
+	public final static String USERNAME_EXISTS = "Username exits";
+	public final static String USER_NOT_FOUND = "User Not Found";
+	public final static String PASSWORD_DID_NOT_MATCH = "Password did not match";
 
 	private static Map<String, HttpStatus> getStatus;
 
@@ -28,15 +28,15 @@ public class Utility {
 	private static void init() {
 		if (getStatus != null) return;
 		getStatus = new TreeMap<>();
-		getStatus.put(success, HttpStatus.OK);
-		getStatus.put(successCreated, HttpStatus.CREATED);
-		getStatus.put(successUpdated, HttpStatus.ACCEPTED);
-		getStatus.put(successDeleted, HttpStatus.ACCEPTED);
-		getStatus.put(newsDoesNotExist, HttpStatus.NOT_FOUND);
-		getStatus.put(unAuthorizedAccess, HttpStatus.UNAUTHORIZED);
-		getStatus.put(usernameExists, HttpStatus.CONFLICT);
-		getStatus.put(userNotFound, HttpStatus.NOT_FOUND);
-		getStatus.put(passwordDidNotMatch, HttpStatus.EXPECTATION_FAILED);
+		getStatus.put(SUCCESS, HttpStatus.OK);
+		getStatus.put(SUCCESS_CREATED, HttpStatus.CREATED);
+		getStatus.put(SUCCESS_UPDATED, HttpStatus.ACCEPTED);
+		getStatus.put(SUCCESS_DELETED, HttpStatus.ACCEPTED);
+		getStatus.put(NEWS_DOES_NOT_EXIST, HttpStatus.NOT_FOUND);
+		getStatus.put(UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+		getStatus.put(USERNAME_EXISTS, HttpStatus.CONFLICT);
+		getStatus.put(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+		getStatus.put(PASSWORD_DID_NOT_MATCH, HttpStatus.EXPECTATION_FAILED);
 	}
 
 	public static HttpStatus getCode(String message) {

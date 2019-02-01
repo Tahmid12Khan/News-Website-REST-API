@@ -6,7 +6,6 @@ import com.practice.news.Model.News;
 import com.practice.news.Security.AuthenticationFacade;
 import com.practice.news.Security.IAuthenticationFacade;
 import com.practice.news.Service.NewsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ public class NewsManagementController {
 	private NewsService newsService;
 	private IAuthenticationFacade authenticationFacade;
 
-	@Autowired
 	public NewsManagementController(NewsService newsService, AuthenticationFacade authentication) {
 		this.newsService = newsService;
 		this.authenticationFacade = authentication;

@@ -22,6 +22,7 @@ public class User {
 	private String userid;
 	@Size(min = 1, message = "Password cannot be of size 0")
 	private String password;
+
 	private String matchingPassword;
 
 	public Long getId() {

@@ -3,7 +3,6 @@ package com.practice.news.Service;
 import com.practice.news.Model.Utility;
 import com.practice.news.Model.News;
 import com.practice.news.Persistence.NewsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -13,12 +12,13 @@ import org.springframework.validation.BindingResult;
 
 import java.util.Optional;
 
+import static com.practice.news.Model.Utility.*;
+
 @Service
 public class NewsService {
 
 	private NewsRepository newsRepository;
 
-	@Autowired
 	public NewsService(NewsRepository newsRepository) {
 		this.newsRepository = newsRepository;
 	}
@@ -55,44 +55,36 @@ public class NewsService {
 			return Utility.getErrorMessages(bindingResult);
 		}
 		newsRepository.saveAndFlush(news);
-		return Utility.successCreated;
-
-
+		return SUCCESS_CREATED;
 	}
 
 	public String update(News news, String username, BindingResult bindingResult) {
-
 		String message = getResult(news, username, bindingResult);
-		if (!message.equals(Utility.success)) return message;
+		if (!message.equals(SUCCESS)) return message;
 		news.setAuthor(username);
 		newsRepository.saveAndFlush(news);
-		return Utility.successUpdated;
-
+		return SUCCESS_UPDATED;
 	}
 
 	private String getResult(News news, String username, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
-			return Utility.getErrorMessages(bindingResult);
-
+			return getErrorMessages(bindingResult);
 		}
 		if (!isNewsExists(news)) {
-			return Utility.newsDoesNotExist;
-
+			return NEWS_DOES_NOT_EXIST;
 		}
 		String author = findById(news.getId()).getAuthor();
 		if (!username.equals(author)) {
-			return Utility.unAuthorizedAccess;
+			return UNAUTHORIZED_ACCESS;
 		}
 
-		return Utility.success;
+		return SUCCESS;
 	}
 
 	public String delete(News news, String username, BindingResult bindingResult) {
 		String message = getResult(news, username, bindingResult);
-		if (!message.equals(Utility.success)) return message;
+		if (!message.equals(SUCCESS)) return message;
 		newsRepository.delete(news);
-		return Utility.successDeleted;
+		return SUCCESS_DELETED;
 	}
-
-
 }

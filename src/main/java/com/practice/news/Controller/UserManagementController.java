@@ -3,7 +3,6 @@ package com.practice.news.Controller;
 import com.practice.news.Model.Utility;
 import com.practice.news.Model.User;
 import com.practice.news.Service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,7 +16,6 @@ import java.util.List;
 public class UserManagementController {
 	private UserService userService;
 
-	@Autowired
 	public UserManagementController(UserService userService) {
 		this.userService = userService;
 
