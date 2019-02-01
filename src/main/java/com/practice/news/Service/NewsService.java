@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 
 
 import java.util.Optional;
@@ -58,15 +59,17 @@ public class NewsService {
 		return SUCCESS_CREATED;
 	}
 
-	public String update(News news, String username, BindingResult bindingResult) {
-		String message = getResult(news, username, bindingResult);
+	public String update(News news, String id, String username, BindingResult bindingResult) {
+
+		String message = getResult(news, id, username, bindingResult);
 		if (!message.equals(SUCCESS)) return message;
 		news.setAuthor(username);
 		newsRepository.saveAndFlush(news);
 		return SUCCESS_UPDATED;
 	}
 
-	private String getResult(News news, String username, BindingResult bindingResult) {
+	private String getResult(News news, String id, String username, BindingResult bindingResult) {
+		validNews(id, news, bindingResult);
 		if (bindingResult.hasErrors()) {
 			return getErrorMessages(bindingResult);
 		}
@@ -81,8 +84,17 @@ public class NewsService {
 		return SUCCESS;
 	}
 
-	public String delete(News news, String username, BindingResult bindingResult) {
-		String message = getResult(news, username, bindingResult);
+	private void validNews(String id, News news, BindingResult bindingResult) {
+		try {
+			long newsId = Long.parseLong(id);
+			news.setId(newsId);
+		} catch (Exception e) {
+			bindingResult.addError(new ObjectError(bindingResult.getObjectName(), "Invalid Id"));
+		}
+	}
+
+	public String delete(News news, String id, String username, BindingResult bindingResult) {
+		String message = getResult(news, id, username, bindingResult);
 		if (!message.equals(SUCCESS)) return message;
 		newsRepository.delete(news);
 		return SUCCESS_DELETED;

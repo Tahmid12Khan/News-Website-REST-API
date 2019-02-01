@@ -30,7 +30,8 @@ public class NewsManagementController {
 	}
 
 	@GetMapping(value = "/api/news")
-	public ResponseEntity<?> showNewsList(@RequestParam(required = false, defaultValue = "1") int page, @RequestParam(required = false, defaultValue = "1000000000") int size) {
+	public ResponseEntity<?> showNewsList(@RequestParam(required = false, defaultValue = "1") int page,
+										  @RequestParam(required = false, defaultValue = "1000000000") int size) {
 		Page<News> news = newsService.findAllByOrderByDateDesc(Math.max(page - 1, 0), size);
 		return new ResponseEntity<>(news, getStatusForNewsSize(news));
 	}
@@ -55,23 +56,24 @@ public class NewsManagementController {
 
 	@PreAuthorize("authentication.name != 'anonymousUser'")
 	@PostMapping(value = "/api/news")
-	public ResponseEntity<?> addNews(@Valid @RequestBody News news, BindingResult bindingResult, Authentication authentication) {
+	public ResponseEntity<?> addNews(@Valid @RequestBody News news, BindingResult bindingResult,
+									 Authentication authentication) {
 		news.setAuthor(authenticationFacade.getAuthentication().getName());
 		String message = newsService.save(news, bindingResult);
 		return new ResponseEntity<>(message, Utility.getCode(message));
 	}
 
 	@PreAuthorize("authentication.name != 'anonymousUser'")
-	@PutMapping(value = "/api/news")
-	public ResponseEntity<?> editNews(@Valid @RequestBody News news, BindingResult bindingResult) {
-		String message = newsService.update(news, authenticationFacade.getAuthentication().getName(), bindingResult);
+	@PutMapping(value = "/api/news/{id}")
+	public ResponseEntity<?> editNews(@Valid @RequestBody News news, @PathVariable String id, BindingResult bindingResult) {
+		String message = newsService.update(news, id, authenticationFacade.getAuthentication().getName(), bindingResult);
 		return new ResponseEntity<>(message, Utility.getCode(message));
 	}
 
 	@PreAuthorize("authentication.name != 'anonymousUser'")
-	@DeleteMapping(value = "/api/news")
-	public ResponseEntity<?> deleteNews(@RequestBody News news, BindingResult bindingResult) {
-		String message = newsService.delete(news, authenticationFacade.getAuthentication().getName(), bindingResult);
+	@DeleteMapping(value = "/api/news/{id}")
+	public ResponseEntity<?> deleteNews(@RequestBody News news, @PathVariable String id, BindingResult bindingResult) {
+		String message = newsService.delete(news, id, authenticationFacade.getAuthentication().getName(), bindingResult);
 		return new ResponseEntity<>(message, Utility.getCode(message));
 	}
 
